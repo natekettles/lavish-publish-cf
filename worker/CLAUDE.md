@@ -13,6 +13,8 @@ Both files are intentionally single-file. Don't split them up "for organization"
 
 ## Commands
 
+Run these from the **repo root** (where `package.json` now lives). Wrangler is invoked with `--config worker/wrangler.toml`.
+
 ```bash
 npm run dev         # wrangler dev — local Worker on http://localhost:8787 (in-memory KV)
 npm run deploy      # wrangler deploy to Cloudflare
@@ -20,8 +22,8 @@ npm run tail        # wrangler tail — stream live logs from prod
 npm run types       # wrangler types — regenerate worker types
 
 # CLI against local dev server
-PUBLISH_CF_API=http://localhost:8787 node cli/index.js publish foo.html
-PUBLISH_CF_API=http://localhost:8787 node cli/index.js list-mine
+PUBLISH_CF_API=http://localhost:8787 node worker/cli/index.js publish foo.html
+PUBLISH_CF_API=http://localhost:8787 node worker/cli/index.js list-mine
 ```
 
 `PUBLISH_CF_API` overrides `~/.publish-cloudflare/config.json`. There is no test suite, no linter, and no build step (Wrangler bundles the TS directly).

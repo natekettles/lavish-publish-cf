@@ -1,0 +1,58 @@
+{
+  "name": "@rubar/lavish-publish-cf",
+  "version": "0.1.0",
+  "description": "CLI for the lavish-publish-cf Cloudflare Worker — publish themed HTML pages with inline comments to your own worker.",
+  "bin": {
+    "publish-cf": "worker/cli/index.js",
+    "lavish-publish-cf": "worker/cli/index.js"
+  },
+  "files": [
+    "worker/cli",
+    "worker/src",
+    "worker/wrangler.toml",
+    "worker/tsconfig.json",
+    "worker/README.md",
+    "worker/CLAUDE.md",
+    "scripts",
+    "skill",
+    "README.md",
+    "LICENSE",
+    "explainer-image.png"
+  ],
+  "scripts": {
+    "dev": "wrangler dev --config worker/wrangler.toml",
+    "deploy": "wrangler deploy --config worker/wrangler.toml",
+    "tail": "wrangler tail --config worker/wrangler.toml",
+    "types": "wrangler types --config worker/wrangler.toml"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260101.0",
+    "typescript": "^5.6.0",
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natekettles/lavish-publish-cf.git"
+  },
+  "homepage": "https://github.com/natekettles/lavish-publish-cf#readme",
+  "bugs": {
+    "url": "https://github.com/natekettles/lavish-publish-cf/issues"
+  },
+  "keywords": [
+    "cloudflare",
+    "cloudflare-workers",
+    "publish",
+    "html",
+    "static-site",
+    "lavish",
+    "htmlship"
+  ],
+  "author": "Nathan Kettles",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

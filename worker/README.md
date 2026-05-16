@@ -13,9 +13,9 @@ For the high-level overview (skill integration, install flow), see the [top-leve
 
 You need a Cloudflare account with Workers enabled (free tier is plenty).
 
-```bash
-cd worker     # from the repo root
+Run these from the **repo root** (where `package.json` lives).
 
+```bash
 # 1. Install deps
 npm install
 
@@ -27,17 +27,17 @@ npx wrangler kv namespace create PAGES
 # → outputs something like:
 #   { binding = "PAGES", id = "abc123…" }
 
-# 4. Paste the id into wrangler.toml (replace REPLACE_WITH_KV_NAMESPACE_ID)
+# 4. Paste the id into worker/wrangler.toml (replace REPLACE_WITH_KV_NAMESPACE_ID)
 
 # 5. Deploy
-npx wrangler deploy
+npm run deploy
 # → outputs the live URL, e.g. https://publish-cloudflare.<account>.workers.dev
 ```
 
 After deploy, point the CLI at it:
 
 ```bash
-node cli/index.js config set --api-base https://publish-cloudflare.<account>.workers.dev
+publish-cf config set --api-base https://publish-cloudflare.<account>.workers.dev
 ```
 
 (Or set `PUBLISH_CF_API` in your shell profile.)
@@ -58,13 +58,15 @@ If you want pages served from `view.example.com` instead of the worker subdomain
 
 ## Install the CLI
 
+The fastest path is npm:
+
 ```bash
-cd worker     # from the repo root
-npm install -g .
+npm install -g @rubar/lavish-publish-cf
 publish-cf --help
 ```
 
-Or use it without install: `node <repo>/worker/cli/index.js …`.
+Or from a checkout: `npm install -g .` from the repo root. Or invoke directly without install:
+`node <repo>/worker/cli/index.js …`, or `npx @rubar/lavish-publish-cf …`.
 
 ---
 
@@ -199,7 +201,7 @@ npx wrangler dev --local
 Uses an in-memory KV emulator on `http://localhost:8787`. No Cloudflare auth required for `--local`. Point the CLI at it:
 
 ```bash
-PUBLISH_CF_API=http://localhost:8787 node cli/index.js publish foo.html
+PUBLISH_CF_API=http://localhost:8787 node worker/cli/index.js publish foo.html
 ```
 
 ---
@@ -207,13 +209,14 @@ PUBLISH_CF_API=http://localhost:8787 node cli/index.js publish foo.html
 ## Project layout
 
 ```
-worker/
-├── README.md
-├── package.json
-├── tsconfig.json
-├── wrangler.toml
-├── src/
-│   └── index.ts        # Worker (single file)
-└── cli/
-    └── index.js        # CLI client (zero-dep Node)
+<repo-root>
+├── package.json        # npm publishable (@rubar/lavish-publish-cf)
+└── worker/
+    ├── README.md
+    ├── tsconfig.json
+    ├── wrangler.toml
+    ├── src/
+    │   └── index.ts    # Worker (single file)
+    └── cli/
+        └── index.js    # CLI client (zero-dep Node)
 ```

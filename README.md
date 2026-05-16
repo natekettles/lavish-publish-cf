@@ -21,6 +21,18 @@ lavish-publish-cf/
 
 ## Install
 
+**Just the CLI** (talks to a worker you've already deployed, or any compatible API):
+
+```sh
+npm install -g @rubar/lavish-publish-cf
+publish-cf config set --api-base https://your-worker.workers.dev
+publish-cf --help
+```
+
+Or use it without install: `npx @rubar/lavish-publish-cf publish my-page.html`.
+
+**Full self-host** (deploy your own Worker + KV):
+
 ```sh
 git clone https://github.com/natekettles/lavish-publish-cf.git
 cd lavish-publish-cf
@@ -29,10 +41,10 @@ cd lavish-publish-cf
 
 The installer walks through:
 
-1. `cd worker && npm install` (Wrangler + nothing else)
+1. `npm install` at the repo root (Wrangler + nothing else)
 2. `npx wrangler login` (interactive — opens browser)
-3. `npx wrangler kv namespace create PAGES` and patches `wrangler.toml`
-4. `npx wrangler deploy` — your worker goes live on `*.workers.dev`
+3. `npx wrangler kv namespace create PAGES` and patches `worker/wrangler.toml`
+4. `npm run deploy` — your worker goes live on `*.workers.dev`
 5. `npm install -g .` so `publish-cf` is on your PATH
 6. Optional: symlink `skill/` into `~/.claude/skills/publish` so Claude Code can find it
 
@@ -64,7 +76,7 @@ The skill assumes `~/.lavish-themes` exists (the install location used by [`lavi
 ## Related projects
 
 - [`lavish-axi`](https://github.com/kunchenguid/lavish-axi) — local editor and review surface. `/publish loc <source>` (handled by the same skill in `skill/`) saves to `.lavish/` and opens with `lavish-axi` instead of publishing.
-- [`lavish-themes`](https://github.com/natekettles/lavish-themes) — the six theme shells the skill picks from.
+- [`@rubar/lavish-themes`](https://www.npmjs.com/package/@rubar/lavish-themes) — the six theme shells the skill picks from. `npm i -g @rubar/lavish-themes` to get the `lavish-themes` CLI (`list`, `path <slug>`, `copy <slug> [dest]`).
 
 ## Licence
 

@@ -23,6 +23,9 @@ WORKER_DIR="$REPO_DIR/worker"
 SKILL_DIR="$REPO_DIR/skill"
 SKILLS_HOME="$HOME/.claude/skills"
 
+# package.json moved to repo root in v0.1.0 — wrangler runs against worker/wrangler.toml.
+PKG_DIR="$REPO_DIR"
+
 bold() { printf "\033[1m%s\033[0m\n" "$*"; }
 dim()  { printf "\033[2m%s\033[0m\n" "$*"; }
 warn() { printf "\033[33m%s\033[0m\n" "$*"; }
@@ -50,7 +53,7 @@ require git
 
 # ---- step 1: install worker deps -------------------------------------------
 bold "Step 1: install worker dependencies"
-cd "$WORKER_DIR"
+cd "$PKG_DIR"
 if [[ -d node_modules && -f node_modules/.package-lock.json ]]; then
   ok "node_modules already in place — skipping"
 else
@@ -100,11 +103,12 @@ echo
 
 # ---- step 4: deploy ---------------------------------------------------------
 bold "Step 4: deploy the worker"
-if ask "Run \`npx wrangler deploy\` now? [Y/n]"; then
-  npx wrangler deploy
+cd "$PKG_DIR"
+if ask "Run \`npx wrangler deploy --config worker/wrangler.toml\` now? [Y/n]"; then
+  npx wrangler deploy --config worker/wrangler.toml
   ok "Deployed"
 else
-  warn "Skipped deploy. Run \`cd $WORKER_DIR && npx wrangler deploy\` when ready."
+  warn "Skipped deploy. Run \`cd $PKG_DIR && npm run deploy\` when ready."
 fi
 echo
 
@@ -113,7 +117,8 @@ if [[ "${SKIP_GLOBAL_CLI:-0}" != "1" ]]; then
   bold "Step 5: install the publish-cf CLI globally"
   if command -v publish-cf >/dev/null 2>&1; then
     ok "publish-cf already on PATH ($(command -v publish-cf))"
-  elif ask "Run \`npm install -g .\` from $WORKER_DIR? [Y/n]"; then
+  elif ask "Run \`npm install -g .\` from $PKG_DIR? [Y/n]"; then
+    cd "$PKG_DIR"
     npm install -g .
     ok "publish-cf installed globally"
   else
