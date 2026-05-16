@@ -1,12 +1,35 @@
+# OS / editor
 .DS_Store
 *.swp
 *.swo
+.vscode/
+.idea/
+
+# Node
 node_modules/
+*.log
+npm-debug.log*
+*.tgz
+dist/
+coverage/
+.cache/
+
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+.npmrc
+*.pem
+*.key
+id_rsa*
+
+# Wrangler / Cloudflare
 .wrangler/
 .dev.vars
 worker-configuration.d.ts
-dist/
-*.log
+
+# Claude Code session metadata
+.claude/
 
 # lavish-axi session output (working artifact, not part of the published repo)
 .lavish/
