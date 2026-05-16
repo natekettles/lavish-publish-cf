@@ -9,7 +9,7 @@
 #   3. Create the PAGES KV namespace and patch wrangler.toml
 #   4. npx wrangler deploy
 #   5. npm install -g . (puts `publish-cf` on your PATH)
-#   6. Optionally symlink skill/ and skill-shim/ into ~/.claude/skills/
+#   6. Optionally symlink skill/ into ~/.claude/skills/publish
 #
 # Env overrides:
 #   LAVISH_PUBLISH_CF_DIR  — repo location (default: $(dirname $(dirname $(realpath $0))))
@@ -21,7 +21,6 @@ set -euo pipefail
 REPO_DIR="${LAVISH_PUBLISH_CF_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
 WORKER_DIR="$REPO_DIR/worker"
 SKILL_DIR="$REPO_DIR/skill"
-SKILL_SHIM_DIR="$REPO_DIR/skill-shim"
 SKILLS_HOME="$HOME/.claude/skills"
 
 bold() { printf "\033[1m%s\033[0m\n" "$*"; }
@@ -123,32 +122,28 @@ if [[ "${SKIP_GLOBAL_CLI:-0}" != "1" ]]; then
   echo
 fi
 
-# ---- step 6: skill symlinks -------------------------------------------------
+# ---- step 6: skill symlink --------------------------------------------------
 if [[ "${SKIP_SKILLS:-0}" != "1" ]]; then
-  bold "Step 6: register Claude Code skills"
+  bold "Step 6: register the /publish Claude Code skill"
   if [[ -d "$SKILLS_HOME" ]]; then
-    for entry in "publish:$SKILL_DIR" "publish-cf:$SKILL_SHIM_DIR"; do
-      name="${entry%%:*}"
-      src="${entry#*:}"
-      link="$SKILLS_HOME/$name"
-      if [[ -L "$link" ]]; then
-        current="$(readlink "$link")"
-        if [[ "$current" == "$src" ]]; then
-          ok "$link → $src (already correct)"
-          continue
-        fi
-        warn "$link points elsewhere ($current). Re-pointing."
-        ln -sfn "$src" "$link"
-        ok "$link → $src (updated)"
-      elif [[ -e "$link" ]]; then
-        warn "$link exists and is not a symlink. Skipping — move it manually if you want lavish-publish-cf there."
-      elif ask "Symlink $link → $src? [Y/n]"; then
-        ln -s "$src" "$link"
-        ok "$link → $src"
+    link="$SKILLS_HOME/publish"
+    if [[ -L "$link" ]]; then
+      current="$(readlink "$link")"
+      if [[ "$current" == "$SKILL_DIR" ]]; then
+        ok "$link → $SKILL_DIR (already correct)"
       else
-        dim "Skipped $name"
+        warn "$link points elsewhere ($current). Re-pointing."
+        ln -sfn "$SKILL_DIR" "$link"
+        ok "$link → $SKILL_DIR (updated)"
       fi
-    done
+    elif [[ -e "$link" ]]; then
+      warn "$link exists and is not a symlink. Skipping — move it manually to register the skill."
+    elif ask "Symlink $link → $SKILL_DIR? [Y/n]"; then
+      ln -s "$SKILL_DIR" "$link"
+      ok "$link → $SKILL_DIR"
+    else
+      dim "Skipped skill registration."
+    fi
   else
     dim "~/.claude/skills not found — install Claude Code first if you want skill discovery."
   fi

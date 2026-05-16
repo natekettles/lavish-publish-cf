@@ -2,13 +2,14 @@
 
 Self-host a Cloudflare Worker that publishes themed HTML pages on your own domain — plus the Claude Code skill that drives it.
 
+![Brief in, themed Cloudflare-hosted page out](explainer-image.png)
+
 API-compatible with [htmlship.com](https://htmlship.com) (same shape, same CLI verbs), but runs on **your** Cloudflare account with **your** KV. No third party in the loop, no monthly fee, no vendor lock-in.
 
 ```
 lavish-publish-cf/
-├── worker/      ← Cloudflare Worker (src/index.ts) + Node CLI (cli/index.js)
-├── skill/       ← /publish Claude Code skill (canonical entry point)
-└── skill-shim/  ← /publish-cf deprecation shim (forces CF mode → /publish)
+├── worker/   ← Cloudflare Worker (src/index.ts) + Node CLI (cli/index.js)
+└── skill/    ← /publish Claude Code skill
 ```
 
 ## What you get
@@ -17,7 +18,6 @@ lavish-publish-cf/
 - A zero-dep **CLI** (`worker/cli/index.js`, installs as `publish-cf`) that handles publish, update, delete, list-mine, plus per-page inline comments.
 - An inline **comment** UI on `/v/<slug>` — viewers select text and leave anchored comments; the owner addresses them and runs `publish-cf comments resolve <slug> <id>`.
 - A **Claude Code skill** (`skill/`) that goes from "a markdown brief" / "a description" / "an existing HTML file" to a themed, published page in one command. Picks a theme from [`lavish-themes`](https://github.com/natekettles/lavish-themes), inlines the styling, calls the CLI, reports the URL.
-- A **deprecation shim** (`skill-shim/`) so `/publish-cf` muscle-memory keeps working.
 
 ## Install
 
@@ -34,7 +34,7 @@ The installer walks through:
 3. `npx wrangler kv namespace create PAGES` and patches `wrangler.toml`
 4. `npx wrangler deploy` — your worker goes live on `*.workers.dev`
 5. `npm install -g .` so `publish-cf` is on your PATH
-6. Optional: symlink `skill/` and `skill-shim/` into `~/.claude/skills/publish` and `~/.claude/skills/publish-cf` so Claude Code can find them
+6. Optional: symlink `skill/` into `~/.claude/skills/publish` so Claude Code can find it
 
 Steps that need your input pause and ask. Steps that don't, run. Re-running is safe — every step detects "already done" and skips.
 

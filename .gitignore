@@ -7,3 +7,6 @@ node_modules/
 worker-configuration.d.ts
 dist/
 *.log
+
+# lavish-axi session output (working artifact, not part of the published repo)
+.lavish/
