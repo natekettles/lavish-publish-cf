@@ -1,0 +1,16 @@
+name = "publish-cloudflare"
+main = "src/index.ts"
+compatibility_date = "2026-05-13"
+
+# Optional: set this to your custom view domain once configured.
+# If unset, the worker uses its own URL with /v/{slug}.
+# [vars]
+# VIEW_BASE_URL = "https://view.example.com"
+
+# KV namespace binding for stored pages.
+# Create with: npx wrangler kv namespace create PAGES
+# Then paste the returned id below.
+[[kv_namespaces]]
+binding = "PAGES"
+id = "15dcacac77c2441b9a7ced9eddbacec3"
+# preview_id = "REPLACE_WITH_PREVIEW_KV_NAMESPACE_ID"  # optional, for `wrangler dev --remote`
